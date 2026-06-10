@@ -185,6 +185,10 @@
   .opp-label small{display:block; font-size:11.5px; font-weight:400; color:var(--muted); margin-top:2px}
   .opp-value{font-size:28px; font-weight:800; color:#3f8f3f; letter-spacing:-.01em; white-space:nowrap}
   .opp.beating .opp-value{font-size:16px; text-align:right; line-height:1.25}
+  .opp-detail{display:flex; gap:12px; margin-top:10px}
+  .opp-stat{flex:1; padding:14px 16px; background:var(--paper); border:1px solid var(--line); border-radius:10px}
+  .opp-stat-label{display:block; font-size:12px; color:var(--muted); font-weight:600; margin-bottom:4px}
+  .opp-stat-val{display:block; font-size:20px; font-weight:800; color:var(--navy); letter-spacing:-.01em}
   @media(max-width:520px){
     .cmp-head, .cmp-row{grid-template-columns:1.4fr 1fr 1fr}
     .cmp-col b{font-size:18px}
@@ -384,6 +388,16 @@
         <span class="opp-label">Revenue recovery opportunity<small id="cOppNote">if you reach the 40% benchmark</small></span>
         <span class="opp-value" id="cOpp">+$0</span>
       </div>
+      <div class="opp-detail">
+        <div class="opp-stat">
+          <span class="opp-stat-label">Invalid deductions</span>
+          <span class="opp-stat-val" id="dInvalid">$0</span>
+        </div>
+        <div class="opp-stat">
+          <span class="opp-stat-label">Currently recovered</span>
+          <span class="opp-stat-val" id="dRecovered">$0</span>
+        </div>
+      </div>
     </div>
 
     <div class="block">
@@ -485,6 +499,15 @@
   window.addEventListener('load', notifyHeight);
   if (window.ResizeObserver) {
     try { new ResizeObserver(notifyHeight).observe(document.body); } catch(e){}
+  }
+
+  // Ask the embedding page to scroll the calculator back into view (used on restart).
+  function notifyScrollTop(){
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'dedcalc:scrollTop' }, '*');
+      }
+    } catch(e){}
   }
 
   /* ---------- helpers ---------- */
@@ -701,6 +724,10 @@
       $('cOppNote').textContent = 'if you reach the 40% recovery benchmark';
     }
 
+    // dollar detail under the callout
+    $('dInvalid').textContent = '$' + fmtFull(c.invalid);
+    $('dRecovered').textContent = '$' + fmtFull(c.recovered);
+
     // ROI bars — today / benchmark 40% / stretch 65%
     // The 40% rung mirrors the opportunity callout above so the figures tie together.
     var rung40num = document.querySelector('#rung40 .rung-num');
@@ -837,6 +864,7 @@
     $('nav').style.display='';
     document.getElementById('rail').style.display='';
     render();
+    notifyScrollTop();
   });
 
   render();

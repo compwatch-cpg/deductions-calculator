@@ -208,14 +208,15 @@
     .roi-head .rung-arrow{display:none}
     .roi-head .rung{min-width:45%}
   }
-  .roi-bars{display:flex; gap:14px; align-items:flex-end; height:150px; padding-top:10px}
-  .roi-bars .col{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%}
-  .roi-bars .bar{width:100%; max-width:90px; border-radius:8px 8px 0 0; transition:height .8s cubic-bezier(.2,.7,.2,1); position:relative; min-height:4px}
+  .roi-bars{display:flex; gap:14px; align-items:flex-end}
+  .roi-bars .col{flex:1; display:flex; flex-direction:column; align-items:center}
+  .roi-bars .bar-track{width:100%; height:190px; display:flex; align-items:flex-end; justify-content:center}
+  .roi-bars .bar{width:100%; max-width:90px; border-radius:8px 8px 0 0; transition:height .8s cubic-bezier(.2,.7,.2,1); position:relative; min-height:6px}
   .roi-bars .bar.now{background:var(--sky)}
   .roi-bars .bar.bm{background:#b9c6e4}
   .roi-bars .bar.target{background:var(--green)}
-  .roi-bars .cap{font-size:11.5px; color:var(--muted); margin-top:8px; text-align:center; font-weight:600}
-  .roi-bars .amt{font-size:12.5px; font-weight:800; color:var(--navy); margin-bottom:6px}
+  .roi-bars .bar .amt{position:absolute; top:-22px; left:0; right:0; text-align:center; font-size:13px; font-weight:800; color:var(--navy); white-space:nowrap}
+  .roi-bars .cap{font-size:11.5px; color:var(--muted); margin-top:10px; text-align:center; font-weight:600}
   .assump{font-size:12px; color:var(--muted-2); margin-top:14px; line-height:1.5}
 
   /* download snapshot */
@@ -416,18 +417,21 @@
       </div>
       <div class="roi-bars">
         <div class="col">
-          <div class="amt">$<span id="barNowAmt">0</span></div>
-          <div class="bar now" id="barNow" style="height:20%"></div>
+          <div class="bar-track">
+            <div class="bar now" id="barNow" style="height:20%"><span class="amt">$<span id="barNowAmt">0</span></span></div>
+          </div>
           <div class="cap">Recovered<br>today</div>
         </div>
         <div class="col">
-          <div class="amt">$<span id="barBmAmt">0</span></div>
-          <div class="bar bm" id="barBm" style="height:40%"></div>
+          <div class="bar-track">
+            <div class="bar bm" id="barBm" style="height:40%"><span class="amt">$<span id="barBmAmt">0</span></span></div>
+          </div>
           <div class="cap">At benchmark<br>(40%)</div>
         </div>
         <div class="col">
-          <div class="amt">$<span id="barTargetAmt">0</span></div>
-          <div class="bar target" id="barTarget" style="height:65%"></div>
+          <div class="bar-track">
+            <div class="bar target" id="barTarget" style="height:65%"><span class="amt">$<span id="barTargetAmt">0</span></span></div>
+          </div>
           <div class="cap">At a strong 65%<br>(above average)</div>
         </div>
       </div>
@@ -744,9 +748,16 @@
     $('barBmAmt').textContent = fmtMoney(c.recoveredBm);
     $('barTargetAmt').textContent = fmtMoney(c.stretchRecovered);
     var maxBar = Math.max(c.recovered, c.recoveredBm, c.stretchRecovered, 1);
-    $('barNow').style.height = Math.max(6,(c.recovered/maxBar)*100) + '%';
-    $('barBm').style.height = Math.max(6,(c.recoveredBm/maxBar)*100) + '%';
-    $('barTarget').style.height = Math.max(6,(c.stretchRecovered/maxBar)*100) + '%';
+    // Exaggerate differences: apply a gentle power curve so smaller bars drop
+    // lower and the visual gaps between scenarios read more dramatically.
+    function barH(v){
+      var ratio = v / maxBar;              // 0..1, true proportion
+      var curved = Math.pow(ratio, 1.7);   // >1 exponent pushes small values down
+      return Math.max(8, curved * 100) + '%';
+    }
+    $('barNow').style.height = barH(c.recovered);
+    $('barBm').style.height = barH(c.recoveredBm);
+    $('barTarget').style.height = barH(c.stretchRecovered);
     $('roiAssump').textContent = 'Benchmark recovery is the 40% industry average; 65% is an above-average stretch target. '
       + 'Figures apply your recovery rate to $' + fmtMoney(c.invalid) + ' of invalid deductions. '
       + 'If you already recover above the benchmark, the opportunity shown is smaller \u2014 a sign you\u2019re ahead of the field.';

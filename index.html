@@ -411,6 +411,27 @@
   var segs = Array.prototype.slice.call(document.querySelectorAll('#rail .seg'));
   var nextBtn = $('nextBtn'), backBtn = $('backBtn');
 
+  /* ---------- iframe auto-resize ----------
+     Posts the document height to the parent page so the embedding iframe can
+     grow/shrink to fit. This removes the internal scrollbar and the page-jump. */
+  var lastH = 0;
+  function notifyHeight(){
+    try {
+      var h = Math.ceil(document.documentElement.getBoundingClientRect().height);
+      if (h && h !== lastH) {
+        lastH = h;
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: 'dedcalc:height', height: h }, '*');
+        }
+      }
+    } catch(e){}
+  }
+  window.addEventListener('resize', notifyHeight);
+  window.addEventListener('load', notifyHeight);
+  if (window.ResizeObserver) {
+    try { new ResizeObserver(notifyHeight).observe(document.body); } catch(e){}
+  }
+
   /* ---------- helpers ---------- */
   function fmtMoney(n){
     n = Math.round(n);
@@ -496,11 +517,11 @@
     nextBtn.textContent = step===4 ? 'See my results' : 'Continue';
     if(step===1){ updateDedReadout(); }
     validate();
-    // focus management
+    // focus management (preventScroll so embedding in an iframe doesn't jump the page)
     var active = steps[step];
     var f = active.querySelector('input[type=text],input[type=email]');
-    if(f){ try{ f.focus(); }catch(e){} }
-    $('card').scrollIntoView({behavior:'smooth', block:'start'});
+    if(f){ try{ f.focus({preventScroll:true}); }catch(e){ try{ f.focus(); }catch(e2){} } }
+    notifyHeight();
   }
 
   nextBtn.addEventListener('click', function(){
@@ -649,7 +670,7 @@
 
     var res = $('results');
     res.classList.add('is-active');
-    res.scrollIntoView({behavior:'smooth', block:'start'});
+    notifyHeight();
   }
 
   function takeaway(c){

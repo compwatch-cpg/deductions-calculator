@@ -148,6 +148,39 @@
   .metric.flag .v{color:var(--vermilion)}
   .metric.good .v{color:#3f8f3f}
 
+  /* value comparison table (You vs benchmark $) */
+  .vtable{border:1px solid var(--line); border-radius:12px; overflow:hidden}
+  .vtable-head, .vtable-row{display:grid; grid-template-columns:1.3fr 1fr 1.2fr; align-items:center}
+  .vtable-head{background:var(--navy); padding:12px 16px}
+  .vtable-head span{color:#fff; font-size:12.5px; font-weight:700}
+  .vtable-head span:nth-child(2), .vtable-head span:nth-child(3){text-align:right}
+  .vtable-row{padding:14px 16px; border-top:1px solid var(--line)}
+  .vtable-row:nth-child(even){background:var(--paper)}
+  .vt-label{font-size:13.5px; font-weight:600; color:var(--ink)}
+  .vt-you, .vt-bm{text-align:right; font-size:16px; font-weight:800; letter-spacing:-.01em}
+  .vt-you{color:var(--blue-bright)}
+  .vt-bm{color:var(--muted)}
+  @media(max-width:520px){
+    .vtable-head, .vtable-row{grid-template-columns:1fr 0.9fr 1fr}
+    .vt-you, .vt-bm{font-size:14px}
+  }
+
+  /* revenue recovery opportunity — hero */
+  .rro-hero{background:linear-gradient(135deg, #eef6ea, #e6f0fb); border:1px solid #d4e6cf; text-align:center; padding:32px 26px}
+  .rro-eyebrow{font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#3f8f3f; margin:0 0 12px}
+  .rro-pool{font-size:13px; color:var(--muted); margin:0 0 6px; font-weight:600}
+  .rro-pool b{color:var(--vermilion); font-weight:800}
+  .rro-big{font-size:clamp(40px,9vw,60px); font-weight:800; color:#358035; letter-spacing:-.02em; line-height:.95; margin:0}
+  .rro-context{font-size:14.5px; color:var(--ink); margin:14px auto 0; max-width:46ch; line-height:1.5}
+  .rro-context b{color:var(--navy)}
+  .rro-stretch{display:inline-flex; align-items:center; gap:10px; margin-top:20px; padding:12px 18px; background:rgba(255,255,255,.7); border:1px solid #d4e6cf; border-radius:999px}
+  .rro-stretch-arrow{color:#3f8f3f; font-size:18px; font-weight:800}
+  .rro-stretch-text{font-size:13px; color:var(--muted); line-height:1.3}
+  .rro-stretch-text b{color:var(--navy); font-weight:700}
+  .rro-hero.beating .rro-big{color:#358035}
+  .rro-hero.beating .rro-stretch{display:none}
+  .rro-big.rro-na{color:var(--muted-2); font-size:clamp(28px,6vw,38px)}
+
   .block{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px 22px; margin-bottom:18px}
   .block h3{font-size:16px; font-weight:700; color:var(--navy); margin:0 0 4px}
   .block .note{font-size:13px; color:var(--muted); margin:0 0 16px}
@@ -329,26 +362,55 @@
       <p class="note">Your results measured against benchmarks from CPG brands in the 2026 survey.</p>
       <div class="bm-legend">
         <span class="bm-legend-item"><span class="sw-you"></span>Your result</span>
-        <span class="bm-legend-item"><span class="sw-avg"></span>Benchmark average</span>
+        <span class="bm-legend-item"><span class="sw-avg"></span>Benchmark</span>
       </div>
       <div id="benchmarks"></div>
     </div>
 
-    <div class="metricgrid">
-      <div class="metric flag">
-        <p class="k">Estimated invalid deductions</p>
-        <div class="v">$<span id="rInvalid">0</span></div>
-        <p class="d" id="rInvalidD"></p>
+    <div class="block">
+      <h3>Your numbers vs. the benchmark</h3>
+      <p class="note">What your rates translate to in dollars, next to the benchmark rate applied to your revenue.</p>
+      <div class="vtable">
+        <div class="vtable-head">
+          <span></span><span>You</span><span>Value @ benchmark rate</span>
+        </div>
+        <div class="vtable-row">
+          <span class="vt-label">Deductions</span>
+          <span class="vt-you" id="vtDedYou">$0</span>
+          <span class="vt-bm" id="vtDedBm">$0</span>
+        </div>
+        <div class="vtable-row">
+          <span class="vt-label">Invalid deductions</span>
+          <span class="vt-you" id="vtInvYou">$0</span>
+          <span class="vt-bm" id="vtInvBm">$0</span>
+        </div>
+        <div class="vtable-row">
+          <span class="vt-label">Dispute recovery</span>
+          <span class="vt-you" id="vtRecYou">$0</span>
+          <span class="vt-bm" id="vtRecBm">$0</span>
+        </div>
       </div>
-      <div class="metric">
-        <p class="k">Currently recovered</p>
-        <div class="v">$<span id="rRecovered">0</span></div>
-        <p class="d" id="rRecoveredD"></p>
+    </div>
+
+    <div class="block rro-hero" id="invHero">
+      <p class="rro-eyebrow">Invalid deduction opportunity</p>
+      <p class="rro-pool">You report <b id="invPool">$0</b> in invalid deductions</p>
+      <p class="rro-big" id="invBigWrap"><span id="invBig">+$0</span></p>
+      <p class="rro-context" id="invContext"></p>
+      <div class="rro-stretch" id="invStretch">
+        <span class="rro-stretch-arrow">↗</span>
+        <span class="rro-stretch-text">Reaching the benchmark, you'd recover about <b id="invStretchVal">+$0</b> of that a year.</span>
       </div>
-      <div class="metric good">
-        <p class="k">Opportunity for recovery</p>
-        <div class="v">$<span id="rGap">0</span></div>
-        <p class="d">Invalid charges you're not winning back today.</p>
+    </div>
+
+    <div class="block rro-hero" id="recHero">
+      <p class="rro-eyebrow">Revenue recovery opportunity</p>
+      <p class="rro-pool">From <b id="rroPool">$0</b> in invalid deductions</p>
+      <p class="rro-big">+$<span id="rroBig">0</span></p>
+      <p class="rro-context" id="rroContext"></p>
+      <div class="rro-stretch" id="rroStretch">
+        <span class="rro-stretch-arrow">↗</span>
+        <span class="rro-stretch-text">Push to a strong <b>65%</b> recovery and that grows to <b id="rroStretchVal">+$0</b> a year.</span>
       </div>
     </div>
    </div><!-- /snapshot -->
@@ -356,6 +418,7 @@
     <div class="takeaway">
       <h3 id="takeTitle">Where this leaves you</h3>
       <p id="takeBody"></p>
+      <p id="takeBacklog" style="display:none"></p>
       <p class="cta-lead">Want to discuss your numbers in detail?</p>
       <a class="cta" id="ctaDemo" href="https://upclear.com/contact/" target="_blank" rel="noopener">Book a free call with us →</a>
     </div>
@@ -554,6 +617,7 @@
     var gap = invalid - recovered;                        // unrecovered invalid
 
     // benchmark figures, calculated against the user's own revenue
+    var dedBm = 0.10 * rev;                               // deductions at 10% benchmark
     var invalidBm = BM_INVALID * ded;                     // invalid $ at 10% benchmark
     var recoveredBm = BM_RECOVERY * invalid;              // recovered $ at 40% benchmark
 
@@ -567,7 +631,7 @@
 
     return {
       rev:rev, ded:ded, invalid:invalid, recovered:recovered, gap:gap,
-      invalidBm:invalidBm, recoveredBm:recoveredBm,
+      dedBm:dedBm, invalidBm:invalidBm, recoveredBm:recoveredBm,
       oppBenchmark:oppBenchmark, beatingBenchmark:beatingBenchmark,
       stretchRecovered:stretchRecovered, upside:upside
     };
@@ -632,7 +696,7 @@
         + '<div class="track">'
         +   '<div class="you" style="width:'+youPct+'%"></div>'
         +   '<div class="avg-dot" style="left:'+refPct+'%"></div>'
-        +   '<div class="avg-label" style="left:'+refPct+'%">avg '+r.ref+'%</div>'
+        +   '<div class="avg-label" style="left:'+refPct+'%">benchmark '+r.ref+'%</div>'
         +   '<div class="you-dot" style="left:'+youPct+'%"></div>'
         + '</div>'
         + '<div class="you-label">you <b>'+r.you+'%</b></div>'
@@ -652,11 +716,52 @@
     $('rExposureSub').textContent = 'At ' + state.dedRate + '% of $' + fmtMoney(c.rev)
       + ' gross revenue. This is total deduction volume flowing through your team each year.';
 
-    $('rInvalid').textContent = fmtMoney(c.invalid);
-    $('rInvalidD').textContent = state.invalidRate + '% of deductions, charges you likely don\u2019t owe.';
-    $('rRecovered').textContent = fmtMoney(c.recovered);
-    $('rRecoveredD').textContent = 'You win back ~' + state.recoveryRate + '% of what you dispute.';
-    $('rGap').textContent = fmtMoney(c.gap);
+    // value comparison table: your $ vs benchmark-rate $
+    $('vtDedYou').textContent = '$' + fmtFull(c.ded);
+    $('vtDedBm').textContent = '$' + fmtFull(c.dedBm);
+    $('vtInvYou').textContent = '$' + fmtFull(c.invalid);
+    $('vtInvBm').textContent = '$' + fmtFull(c.invalidBm);
+    $('vtRecYou').textContent = '$' + fmtFull(c.recovered);
+    $('vtRecBm').textContent = '$' + fmtFull(c.recoveredBm);
+
+    // ===== Invalid deduction opportunity hero =====
+    // If invalid rate is below the 10% benchmark, show the gap they may be missing,
+    // and what reaching the benchmark (then recovering at 40%) would be worth.
+    var invHero = $('invHero');
+    $('invPool').textContent = '$' + fmtFull(c.invalid);
+    var invBelow = state.invalidRate < 10;
+    if (invBelow) {
+      invHero.className = 'block rro-hero';
+      var invGap = Math.max(0, c.invalidBm - c.invalid);   // missed invalid $
+      var invRecoverable = invGap * 0.40;                  // recoverable at 40% benchmark
+      $('invBigWrap').className = 'rro-big';
+      $('invBig').textContent = '+$' + fmtFull(invGap);
+      $('invContext').innerHTML = 'At <b>' + state.invalidRate + '%</b>, you flag fewer invalid deductions than the '
+        + '<b>10% industry benchmark</b>. That gap is invalid charges you may be missing, leaving money on the table.';
+      $('invStretchVal').textContent = '+$' + fmtFull(invRecoverable);
+    } else {
+      invHero.className = 'block rro-hero beating';
+      $('invBigWrap').className = 'rro-big rro-na';
+      $('invBig').textContent = 'N/A';
+      $('invContext').innerHTML = 'At <b>' + state.invalidRate + '%</b>, you\u2019re already at or above the '
+        + '<b>10% industry benchmark</b> for invalid deductions identified. The opportunity now is recovering more of them.';
+    }
+
+    // ===== Revenue recovery opportunity hero (dispute recovery) =====
+    $('rroPool').textContent = '$' + fmtFull(c.invalid);
+    var recHero = $('recHero');
+    if (c.beatingBenchmark) {
+      recHero.className = 'block rro-hero beating';
+      $('rroBig').textContent = fmtFull(c.upside);
+      $('rroContext').innerHTML = 'You\u2019re already recovering above the <b>40% benchmark</b> \u2014 great work. '
+        + 'There\u2019s still about <b>$' + fmtFull(c.upside) + '</b> a year available by pushing recovery toward a best-in-class 65%.';
+    } else {
+      recHero.className = 'block rro-hero';
+      $('rroBig').textContent = fmtFull(c.oppBenchmark);
+      $('rroContext').innerHTML = 'That\u2019s the additional revenue you\u2019d recover each year by lifting dispute recovery from '
+        + '<b>' + state.recoveryRate + '%</b> to the <b>40% industry benchmark</b>.';
+      $('rroStretchVal').textContent = '+$' + fmtFull(c.upside);
+    }
 
     buildBenchmarks();
 
@@ -664,6 +769,9 @@
     var t = takeaway(c);
     $('takeTitle').textContent = t.title;
     $('takeBody').textContent = t.body;
+    var bl = $('takeBacklog');
+    if (t.backlog) { bl.textContent = t.backlog; bl.style.display = ''; }
+    else { bl.style.display = 'none'; }
 
     var res = $('results');
     res.classList.add('is-active');
@@ -671,37 +779,31 @@
   }
 
   function takeaway(c){
-    var worst = null;
-    if(state.recoveryRate < 50) worst = 'recovery';
-    else if(state.invalidRate > 10) worst = 'invalid';
-    else if(state.agingRate > 30) worst = 'aging';
-
-    if(worst==='recovery'){
-      return {
+    // Recovery message: below benchmark = "bleeding", at/above = "congratulations".
+    var recoveryBelow = state.recoveryRate < 40;
+    var t;
+    if (recoveryBelow) {
+      t = {
         title:'Recovery is where you\u2019re bleeding',
-        body:'You\u2019re winning back only '+state.recoveryRate+'% of disputes, leaving roughly $'
-          + fmtMoney(c.gap) + ' in invalid charges unrecovered each year. That puts you with the 63% of brands recovering less than half. Tighter documentation and disputes are the fastest lever.'
+        body:'You\u2019re recovering only ' + state.recoveryRate + '% of disputes, leaving roughly $'
+          + fmtMoney(c.gap) + ' in invalid charges on the table each year. That puts you with the 63% of brands recovering less than half of their invalid deductions.'
+      };
+    } else {
+      t = {
+        title:'Congratulations!',
+        body:'You\u2019re beating the benchmark! But there\u2019s still money on the table. If you were able to boost your recovery rate to 65%, you\u2019d be reclaiming an additional $'
+          + fmtFull(c.upside) + '.'
       };
     }
-    if(worst==='invalid'){
-      return {
-        title:'Your invalid rate runs hot',
-        body:'At '+state.invalidRate+'%, you\u2019re above the level most brands report — meaning $'
-          + fmtMoney(c.invalid) + ' a year in charges you may not owe. Catching these at validation, before they\u2019re written off, is where the money is.'
-      };
+    // Optional backlog message: only if backlog is above the 26% benchmark.
+    if (state.agingRate > 26) {
+      var pts = state.agingRate - 26;
+      t.backlog = 'You reported deductions older than 60 days to be ' + state.agingRate + '%. This is ' + pts
+        + ' points higher than the benchmark. Because many retailers and distributors restrict how long deductions can be disputed, age may be limiting the revenue you\u2019re able to recover.';
+    } else {
+      t.backlog = '';
     }
-    if(worst==='aging'){
-      return {
-        title:'Your backlog is aging out',
-        body:'With '+state.agingRate+'% of deductions past 60 days, much of your $'
-          + fmtMoney(c.gap) + ' recovery opportunity is at risk — aging past many retailers\u2019 dispute windows. Speed of resolution is your constraint, not effort.'
-      };
-    }
-    return {
-      title:'You\u2019re ahead of the benchmark',
-      body:'Your profile beats the 2026 survey across the board. The opportunity now is protecting that — there\u2019s still about $'
-        + fmtMoney(c.upside) + ' of upside in closing the gap to the benchmark average.'
-    };
+    return t;
   }
 
   /* ---------- download snapshot (PNG) ---------- */

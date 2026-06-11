@@ -30,7 +30,7 @@
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
   body{
-    margin:0; background:var(--paper); color:var(--ink);
+    margin:0; background:transparent; color:var(--ink);
     font-family:"Inter","Segoe UI",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
     line-height:1.5; -webkit-font-smoothing:antialiased;
   }
@@ -164,7 +164,7 @@
 
   /* value comparison table (You vs benchmark $) */
   .vtable{border:1px solid var(--line); border-radius:12px; overflow:hidden}
-  .vtable-head, .vtable-row{display:grid; grid-template-columns:1.2fr 1fr 1.1fr 96px; align-items:center}
+  .vtable-head, .vtable-row{display:grid; grid-template-columns:1.2fr 1fr 1.1fr 40px; align-items:center}
   .vtable-head{background:var(--navy); padding:12px 16px}
   .vtable-head span{color:#fff; font-size:12.5px; font-weight:700}
   .vtable-head span:nth-child(2), .vtable-head span:nth-child(3){text-align:right}
@@ -174,8 +174,8 @@
   .vt-you, .vt-bm{text-align:right; font-size:16px; font-weight:800; letter-spacing:-.01em}
   .vt-you{color:var(--blue-bright)}
   .vt-bm{color:var(--muted)}
-  .vt-ind-wrap{justify-self:end; display:inline-flex; align-items:center; gap:6px}
-  .vt-ind{width:12px; height:12px; border-radius:50%; background:var(--line); flex:0 0 auto}
+  .vt-ind-wrap{justify-self:center; display:inline-flex; align-items:center}
+  .vt-ind{width:14px; height:14px; border-radius:50%; background:var(--line); flex:0 0 auto}
   .vt-ind.good{background:#46a046}
   .vt-ind.warn{background:#e6a52e}
   .vt-ind.bad{background:#d8483f}
@@ -190,16 +190,16 @@
   }
 
   /* revenue recovery opportunity — hero */
-  .rro-hero{background:linear-gradient(135deg, #eef6ea, #e6f0fb); border:1px solid #d4e6cf; text-align:center; padding:32px 26px}
-  .rro-eyebrow{font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#3f8f3f; margin:0 0 12px}
-  .rro-pool{font-size:13px; color:var(--muted); margin:0 0 6px; font-weight:600}
+  .rro-hero{background:linear-gradient(135deg, #eef6ea, #e6f0fb); border:1px solid #d4e6cf; text-align:center; padding:26px 26px}
+  .rro-eyebrow{font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#3f8f3f; margin:0 0 10px}
+  .rro-pool{font-size:13px; color:var(--muted); margin:0 0 2px; font-weight:600}
   .rro-pool b{color:var(--vermilion); font-weight:800}
   .rro-biglabel{font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:14px 0 2px}
-  .rro-big{font-size:clamp(40px,9vw,60px); font-weight:800; color:#358035; letter-spacing:-.02em; line-height:.95; margin:0}
-  .rro-context{font-size:14.5px; color:var(--ink); margin:14px auto 0; max-width:46ch; line-height:1.5}
+  .rro-big{font-size:clamp(40px,9vw,58px); font-weight:800; color:#358035; letter-spacing:-.02em; line-height:.95; margin:0}
+  .rro-context{font-size:13.5px; color:var(--ink); margin:0 auto 8px; max-width:none; line-height:1.4}
   .rro-context b{color:var(--navy)}
-  .rro-subnote{font-size:13.5px; color:var(--muted); margin:12px auto 0; max-width:46ch; line-height:1.5}
-  .rro-stretch{display:inline-flex; align-items:center; gap:10px; margin-top:20px; padding:12px 18px; background:rgba(255,255,255,.7); border:1px solid #d4e6cf; border-radius:999px}
+  .rro-subnote{font-size:12.5px; color:var(--muted); margin:6px auto 0; max-width:none; line-height:1.4}
+  .rro-stretch{display:inline-flex; align-items:center; gap:10px; margin-top:16px; padding:11px 18px; background:rgba(255,255,255,.7); border:1px solid #d4e6cf; border-radius:999px}
   .rro-stretch-arrow{color:#3f8f3f; font-size:18px; font-weight:800}
   .rro-stretch-text{font-size:13px; color:var(--muted); line-height:1.3}
   .rro-stretch-text b{color:var(--navy); font-weight:700}
@@ -786,12 +786,9 @@
     $('vtInvBm').textContent = '$' + fmtFull(c.invalidBm);
     $('vtRecYou').textContent = '$' + fmtFull(c.recovered);
     $('vtRecBm').textContent = '$' + fmtFull(c.recoveredBm);
-    // traffic lights: green=good, yellow=caution, red=high/bad
-    var indWord = { good:'Good', warn:'Caution', bad:'High' };
+    // traffic lights: green=good, yellow=caution, red=high/bad (dots only, no words)
     function setInd(dotId, lblId, cls){
       $(dotId).className = 'vt-ind ' + cls;
-      $(lblId).className = 'vt-ind-label ' + cls;
-      $(lblId).textContent = indWord[cls];
     }
     // Deductions: at/below benchmark good, above is a warning
     setInd('vtDedInd', 'vtDedLbl', state.dedRate <= 10 ? 'good' : 'warn');

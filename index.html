@@ -435,9 +435,9 @@
     <div class="block rro-hero" id="invHero">
       <p class="rro-eyebrow">Invalid deduction opportunity</p>
       <p class="rro-context" id="invContext"></p>
-      <p class="rro-pool">You report <b id="invPool">$0</b> in invalid deductions</p>
-      <p class="rro-biglabel" id="invBigLabel"></p>
+      <p class="rro-pool" id="invPoolLine">You report <b id="invPool">$0</b> in invalid deductions</p>
       <p class="rro-big" id="invBigWrap"><span id="invBig">+$0</span></p>
+      <p class="rro-subnote" id="invSubnote"></p>
       <div class="rro-stretch" id="invStretch">
         <span class="rro-stretch-arrow">↗</span>
         <span class="rro-stretch-text">Reaching the benchmark recovery rate for invalid deductions, you'd recover an additional <b id="invStretchVal">+$0</b>.</span>
@@ -446,11 +446,10 @@
 
     <div class="block rro-hero" id="recHero">
       <p class="rro-eyebrow">Revenue recovery opportunity</p>
-      <p class="rro-pool">From <b id="rroPool">$0</b> in invalid deductions</p>
       <p class="rro-context" id="rroContext"></p>
-      <p class="rro-biglabel" id="rroBigLabel"></p>
+      <p class="rro-pool" id="rroPoolLine">From <b id="rroPool">$0</b> in invalid deductions, you could recover an extra:</p>
       <p class="rro-big">+$<span id="rroBig">0</span></p>
-      <p class="rro-subnote" id="rroSubnote">That's the additional revenue you'd recover by increasing your dispute win rate to the industry benchmark.</p>
+      <p class="rro-subnote" id="rroSubnote">by lifting your win rate to the 40% benchmark.</p>
       <div class="rro-stretch" id="rroStretch">
         <span class="rro-stretch-arrow">↗</span>
         <span class="rro-stretch-text">Look at the value if you increased recovery to 65%: <b id="rroStretchVal">+$0</b></span>
@@ -805,26 +804,29 @@
     // If invalid rate is below the 10% benchmark, show the gap they may be missing,
     // and what reaching the benchmark (then recovering at 40%) would be worth.
     var invHero = $('invHero');
-    $('invPool').textContent = '$' + fmtFull(c.invalid);
     var invBelow = state.invalidRate < 10;
+    var invStretch = $('invStretch');
     if (invBelow) {
       invHero.className = 'block rro-hero rro-caution';
       var invGap = Math.max(0, c.invalidBm - c.invalid);   // missed invalid $
       var invRecoverable = invGap * 0.40;                  // recoverable at 40% benchmark
       $('invBigWrap').className = 'rro-big rro-warn';
       $('invBig').textContent = '+$' + fmtFull(invGap);
-      $('invBigLabel').textContent = 'Potential invalid deductions you may be missing';
-      $('invBigLabel').style.display = '';
-      $('invContext').innerHTML = 'At <b>' + state.invalidRate + '%</b>, you flag fewer invalid deductions than the '
-        + '<b>10% industry benchmark</b>. That gap is invalid charges you may be missing, leaving money on the table.';
+      $('invContext').innerHTML = 'At <b>' + state.invalidRate + '%</b>, you flag fewer invalid deductions than the <b>10% industry benchmark</b>.';
+      $('invPoolLine').innerHTML = 'You report <b>$' + fmtFull(c.invalid) + '</b> in invalid deductions today. You may be missing:';
+      $('invSubnote').textContent = 'in invalid charges you aren\u2019t catching yet, based on the benchmark rate.';
+      $('invSubnote').style.display = '';
+      invStretch.style.display = '';
       $('invStretchVal').textContent = '+$' + fmtFull(invRecoverable);
     } else {
       invHero.className = 'block rro-hero beating';
       $('invBigWrap').className = 'rro-big rro-na';
       $('invBig').textContent = 'N/A';
-      $('invBigLabel').style.display = 'none';
       $('invContext').innerHTML = 'At <b>' + state.invalidRate + '%</b>, you\u2019re already at or above the '
         + '<b>10% industry benchmark</b> for invalid deductions identified. The opportunity now is recovering more of them.';
+      $('invPoolLine').innerHTML = 'You report <b>$' + fmtFull(c.invalid) + '</b> in invalid deductions';
+      $('invSubnote').style.display = 'none';
+      invStretch.style.display = 'none';
     }
 
     // ===== Revenue recovery opportunity hero (dispute recovery) =====
@@ -836,32 +838,30 @@
     $('rroContext').innerHTML = 'At <b>' + state.recoveryRate + '%</b>, you recover <b>' + recDiff
       + ' points ' + recDir + '</b> than the benchmark of <b>40%</b>.';
     var recStretch = $('rroStretch');
+    $('rroSubnote').style.display = '';
     if (state.recoveryRate >= 65) {
       // At/above the 65% stretch target — no further modeled upside.
       recHero.className = 'block rro-hero beating';
       recBig.className = 'rro-big rro-na';
       recBig.innerHTML = 'Top tier';
-      $('rroBigLabel').style.display = 'none';
+      $('rroPoolLine').innerHTML = 'From <b>$' + fmtFull(c.invalid) + '</b> in invalid deductions';
       $('rroSubnote').textContent = 'You\u2019re already recovering at or above a best-in-class 65%. There\u2019s no modeled recovery gap to close \u2014 the focus now is holding that rate.';
-      $('rroSubnote').style.display = '';
       recStretch.style.display = 'none';
     } else if (c.beatingBenchmark) {
       // At/above 40% but below 65% — remaining opportunity is the push to 65%.
       recHero.className = 'block rro-hero';
       recBig.className = 'rro-big';
       recBig.innerHTML = '+$<span id="rroBig">' + fmtFull(c.upside) + '</span>';
-      $('rroBigLabel').textContent = 'Potential additional recovery at a strong 65%';
-      $('rroBigLabel').style.display = '';
-      $('rroSubnote').style.display = 'none';
+      $('rroPoolLine').innerHTML = 'From <b>$' + fmtFull(c.invalid) + '</b> in invalid deductions, you could recover an extra:';
+      $('rroSubnote').textContent = 'by lifting your win rate to a best-in-class 65%.';
       recStretch.style.display = 'none';
     } else {
       // Below benchmark — opportunity is reaching 40%, 65% stretch in the pill.
       recHero.className = 'block rro-hero';
       recBig.className = 'rro-big';
       recBig.innerHTML = '+$<span id="rroBig">' + fmtFull(c.oppBenchmark) + '</span>';
-      $('rroBigLabel').textContent = 'Potential additional recovery at the 40% benchmark';
-      $('rroBigLabel').style.display = '';
-      $('rroSubnote').style.display = 'none';
+      $('rroPoolLine').innerHTML = 'From <b>$' + fmtFull(c.invalid) + '</b> in invalid deductions, you could recover an extra:';
+      $('rroSubnote').textContent = 'by lifting your win rate to the 40% benchmark.';
       recStretch.style.display = '';
       $('rroStretchVal').textContent = '+$' + fmtFull(c.upside);
     }

@@ -69,6 +69,16 @@
   .choices{display:grid; gap:8px}
   .choices.cols-2{grid-template-columns:1fr 1fr}
   .choices.cols-3{grid-template-columns:repeat(3,1fr)}
+
+  /* number stepper */
+  .stepper{display:flex; align-items:stretch; gap:10px; max-width:280px; margin:6px auto 0}
+  .step-btn{width:54px; flex:0 0 auto; border:1.5px solid var(--line); background:var(--card); border-radius:12px; font-size:26px; font-weight:600; color:var(--navy); cursor:pointer; line-height:1; transition:.15s}
+  .step-btn:hover{border-color:var(--blue); background:#f4f7ff}
+  .step-btn:active{transform:scale(.96)}
+  .stepper-val{flex:1; display:flex; align-items:center; justify-content:center; border:1.5px solid var(--line); border-radius:12px; padding:0 8px; gap:2px}
+  .stepper-val input{width:100%; border:none; outline:none; font-size:32px; font-weight:800; color:var(--navy); text-align:center; font-family:inherit; background:none; -moz-appearance:textfield}
+  .stepper-val input::-webkit-outer-spin-button, .stepper-val input::-webkit-inner-spin-button{-webkit-appearance:none; margin:0}
+  .stepper-pct{font-size:24px; font-weight:800; color:var(--muted); flex:0 0 auto}
   @media(max-width:520px){.choices.cols-3{grid-template-columns:1fr 1fr}}
   .choice{
     border:1.5px solid var(--line); background:#fff; border-radius:10px; padding:12px 14px;
@@ -148,9 +158,13 @@
   .metric.flag .v{color:var(--vermilion)}
   .metric.good .v{color:#3f8f3f}
 
+  /* results section heading (above the slider box) */
+  .results-h2{font-size:20px; font-weight:800; color:var(--navy); margin:8px 0 4px; letter-spacing:-.01em}
+  .results-sub{font-size:13.5px; color:var(--muted); margin:0 0 16px}
+
   /* value comparison table (You vs benchmark $) */
   .vtable{border:1px solid var(--line); border-radius:12px; overflow:hidden}
-  .vtable-head, .vtable-row{display:grid; grid-template-columns:1.3fr 1fr 1.2fr; align-items:center}
+  .vtable-head, .vtable-row{display:grid; grid-template-columns:1.2fr 1fr 1.1fr 96px; align-items:center}
   .vtable-head{background:var(--navy); padding:12px 16px}
   .vtable-head span{color:#fff; font-size:12.5px; font-weight:700}
   .vtable-head span:nth-child(2), .vtable-head span:nth-child(3){text-align:right}
@@ -160,9 +174,19 @@
   .vt-you, .vt-bm{text-align:right; font-size:16px; font-weight:800; letter-spacing:-.01em}
   .vt-you{color:var(--blue-bright)}
   .vt-bm{color:var(--muted)}
-  @media(max-width:520px){
-    .vtable-head, .vtable-row{grid-template-columns:1fr 0.9fr 1fr}
-    .vt-you, .vt-bm{font-size:14px}
+  .vt-ind-wrap{justify-self:end; display:inline-flex; align-items:center; gap:6px}
+  .vt-ind{width:12px; height:12px; border-radius:50%; background:var(--line); flex:0 0 auto}
+  .vt-ind.good{background:#46a046}
+  .vt-ind.warn{background:#e6a52e}
+  .vt-ind.bad{background:#d8483f}
+  .vt-ind-label{font-size:11px; font-weight:700; letter-spacing:.01em}
+  .vt-ind-label.good{color:#3f8f3f}
+  .vt-ind-label.warn{color:#b9802a}
+  .vt-ind-label.bad{color:var(--vermilion)}
+  @media(max-width:560px){
+    .vtable-head, .vtable-row{grid-template-columns:1fr 0.8fr 0.9fr 18px}
+    .vt-you, .vt-bm{font-size:13.5px}
+    .vt-ind-label{display:none}
   }
 
   /* revenue recovery opportunity — hero */
@@ -170,9 +194,11 @@
   .rro-eyebrow{font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#3f8f3f; margin:0 0 12px}
   .rro-pool{font-size:13px; color:var(--muted); margin:0 0 6px; font-weight:600}
   .rro-pool b{color:var(--vermilion); font-weight:800}
+  .rro-biglabel{font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:14px 0 2px}
   .rro-big{font-size:clamp(40px,9vw,60px); font-weight:800; color:#358035; letter-spacing:-.02em; line-height:.95; margin:0}
   .rro-context{font-size:14.5px; color:var(--ink); margin:14px auto 0; max-width:46ch; line-height:1.5}
   .rro-context b{color:var(--navy)}
+  .rro-subnote{font-size:13.5px; color:var(--muted); margin:12px auto 0; max-width:46ch; line-height:1.5}
   .rro-stretch{display:inline-flex; align-items:center; gap:10px; margin-top:20px; padding:12px 18px; background:rgba(255,255,255,.7); border:1px solid #d4e6cf; border-radius:999px}
   .rro-stretch-arrow{color:#3f8f3f; font-size:18px; font-weight:800}
   .rro-stretch-text{font-size:13px; color:var(--muted); line-height:1.3}
@@ -180,6 +206,7 @@
   .rro-hero.beating .rro-big{color:#358035}
   .rro-hero.beating .rro-stretch{display:none}
   .rro-big.rro-na{color:var(--muted-2); font-size:clamp(28px,6vw,38px)}
+  .rro-big.rro-warn{color:#d39728}
 
   .block{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px 22px; margin-bottom:18px}
   .block h3{font-size:16px; font-weight:700; color:var(--navy); margin:0 0 4px}
@@ -225,10 +252,19 @@
   .takeaway .cta:hover{background:#3f63cf}
 
   /* download snapshot (own block, light) */
-  .dl-block .dl-row{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
-  .dl-block input[type=email]{flex:1; min-width:200px; border:1.5px solid var(--line); border-radius:10px; padding:13px 14px; font-size:15px; font-family:inherit}
-  .dl-block input[type=email]:focus{outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(91,127,222,.18)}
-  .dl-block .btn{white-space:nowrap}
+  .dl-row{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap}
+  .dl-row input[type=email]{flex:1; min-width:200px; border:1.5px solid var(--line); border-radius:10px; padding:13px 14px; font-size:15px; font-family:inherit}
+  .dl-row input[type=email]:focus{outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(91,127,222,.18)}
+  .dl-row .btn{white-space:nowrap}
+
+  /* what you can do next */
+  .next-list{display:flex; flex-direction:column; gap:10px}
+  .next-item{display:block; text-decoration:none; border:1px solid var(--line); border-radius:12px; padding:16px 18px; background:var(--card); transition:.15s}
+  a.next-item:hover{border-color:var(--blue); background:#f4f7ff; transform:translateY(-1px)}
+  .next-title{display:block; font-size:15px; font-weight:700; color:var(--navy)}
+  .next-sub{display:block; font-size:12.5px; color:var(--muted); margin-top:3px}
+  .next-download{cursor:default}
+  .next-download:hover{transform:none; border-color:var(--line); background:var(--card)}
 
   .restart{text-align:center; margin-top:8px}
   .restart button{background:none; border:none; color:var(--muted); font-size:13px; cursor:pointer; text-decoration:underline; font-family:inherit}
@@ -245,7 +281,7 @@
 <div class="wrap">
 
   <h1>What are deductions really costing you?</h1>
-  <p class="lede">Answer five quick questions to estimate your invalid-deduction exposure, see how you stack up against the 2026 benchmark, and size the recovery you may be leaving on the table.</p>
+  <p class="lede">Answer five quick questions to see how your deductions compare to a benchmark created by surveying CPG companies in 2025.</p>
 
   <div class="rail" id="rail" aria-hidden="true">
     <div class="seg"><i></i></div>
@@ -284,12 +320,12 @@
       <h2>Deductions as a percentage of gross sales</h2>
       <div class="field">
         <div class="sliderwrap">
-          <input type="range" id="dedRate" min="2" max="20" step="0.5" value="10">
-          <span class="sliderval" id="dedRateVal">10%</span>
+          <input type="range" id="dedRate" min="0" max="20" step="0.5" value="0">
+          <span class="sliderval" id="dedRateVal">0%</span>
         </div>
         <div class="readout" id="dedReadout">
           <span class="big">$<span id="dedDollars">0</span></span>
-          <span class="small"><span id="dedPct">10</span>% of annual revenue</span>
+          <span class="small"><span id="dedPct">0</span>% of annual revenue</span>
         </div>
       </div>
     </section>
@@ -315,13 +351,13 @@
     <section class="step" data-step="3">
       <div class="step-head"><span class="step-num">Step 4 of 5</span></div>
       <h2>Of the deduction dollars you dispute, how much do you win back?</h2>
-      <p class="hint">How much is repaid or credited — what percent is repaid?</p>
+      <p class="hint">Pick the percentage closest to what you successfully recover or get credited.</p>
       <div class="field">
         <div class="choices cols-2" data-target="recoveryRate" data-numeric="1">
-          <button class="choice" data-val="15">Less than a quarter</button>
-          <button class="choice" data-val="37">A quarter to half</button>
-          <button class="choice" data-val="62">Half to three-quarters</button>
-          <button class="choice" data-val="82">Most of it</button>
+          <button class="choice" data-val="15">Under 25%</button>
+          <button class="choice" data-val="37">25 – 50%</button>
+          <button class="choice" data-val="62">50 – 75%</button>
+          <button class="choice" data-val="85">75% or more</button>
         </div>
       </div>
     </section>
@@ -333,9 +369,9 @@
       <p class="hint">Deductions aged past 60 days are harder to dispute and likelier to be written off.</p>
       <div class="field">
         <div class="choices cols-3" data-target="agingRate" data-numeric="1">
-          <button class="choice" data-val="10">Under 15%<small>Tight backlog</small></button>
-          <button class="choice" data-val="26">Around 25%</button>
-          <button class="choice" data-val="45">40% or more<small>Heavy backlog</small></button>
+          <button class="choice" data-val="10">Under 15%</button>
+          <button class="choice" data-val="20">16 – 25%</button>
+          <button class="choice" data-val="35">25% or more</button>
         </div>
       </div>
     </section>
@@ -357,9 +393,10 @@
       <p class="sub" id="rExposureSub"></p>
     </div>
 
+    <h2 class="results-h2">How you compare to the benchmark</h2>
+    <p class="results-sub">Your results compared to brands in the benchmark study.</p>
+
     <div class="block block-feature">
-      <h3>How you compare to the benchmark</h3>
-      <p class="note">Your results measured against benchmarks from CPG brands in the 2026 survey.</p>
       <div class="bm-legend">
         <span class="bm-legend-item"><span class="sw-you"></span>Your result</span>
         <span class="bm-legend-item"><span class="sw-avg"></span>Benchmark</span>
@@ -369,48 +406,54 @@
 
     <div class="block">
       <h3>Your numbers vs. the benchmark</h3>
-      <p class="note">What your rates translate to in dollars, next to the benchmark rate applied to your revenue.</p>
+      <p class="note">Your deduction rates converted to value, with comparison to value at the benchmark rates.</p>
       <div class="vtable">
         <div class="vtable-head">
-          <span></span><span>You</span><span>Value @ benchmark rate</span>
+          <span></span><span>You</span><span>Value @ benchmark rate</span><span class="vt-ind-head"></span>
         </div>
         <div class="vtable-row">
           <span class="vt-label">Deductions</span>
           <span class="vt-you" id="vtDedYou">$0</span>
           <span class="vt-bm" id="vtDedBm">$0</span>
+          <span class="vt-ind-wrap"><span class="vt-ind" id="vtDedInd"></span><span class="vt-ind-label" id="vtDedLbl"></span></span>
         </div>
         <div class="vtable-row">
           <span class="vt-label">Invalid deductions</span>
           <span class="vt-you" id="vtInvYou">$0</span>
           <span class="vt-bm" id="vtInvBm">$0</span>
+          <span class="vt-ind-wrap"><span class="vt-ind" id="vtInvInd"></span><span class="vt-ind-label" id="vtInvLbl"></span></span>
         </div>
         <div class="vtable-row">
           <span class="vt-label">Dispute recovery</span>
           <span class="vt-you" id="vtRecYou">$0</span>
           <span class="vt-bm" id="vtRecBm">$0</span>
+          <span class="vt-ind-wrap"><span class="vt-ind" id="vtRecInd"></span><span class="vt-ind-label" id="vtRecLbl"></span></span>
         </div>
       </div>
     </div>
 
     <div class="block rro-hero" id="invHero">
       <p class="rro-eyebrow">Invalid deduction opportunity</p>
-      <p class="rro-pool">You report <b id="invPool">$0</b> in invalid deductions</p>
-      <p class="rro-big" id="invBigWrap"><span id="invBig">+$0</span></p>
       <p class="rro-context" id="invContext"></p>
+      <p class="rro-pool">You report <b id="invPool">$0</b> in invalid deductions</p>
+      <p class="rro-biglabel" id="invBigLabel"></p>
+      <p class="rro-big" id="invBigWrap"><span id="invBig">+$0</span></p>
       <div class="rro-stretch" id="invStretch">
         <span class="rro-stretch-arrow">↗</span>
-        <span class="rro-stretch-text">Reaching the benchmark, you'd recover about <b id="invStretchVal">+$0</b> of that a year.</span>
+        <span class="rro-stretch-text">Reaching the benchmark recovery rate for invalid deductions, you'd recover an additional <b id="invStretchVal">+$0</b>.</span>
       </div>
     </div>
 
     <div class="block rro-hero" id="recHero">
       <p class="rro-eyebrow">Revenue recovery opportunity</p>
       <p class="rro-pool">From <b id="rroPool">$0</b> in invalid deductions</p>
-      <p class="rro-big">+$<span id="rroBig">0</span></p>
       <p class="rro-context" id="rroContext"></p>
+      <p class="rro-biglabel" id="rroBigLabel"></p>
+      <p class="rro-big">+$<span id="rroBig">0</span></p>
+      <p class="rro-subnote" id="rroSubnote">That's the additional revenue you'd recover by increasing your dispute win rate to the industry benchmark.</p>
       <div class="rro-stretch" id="rroStretch">
         <span class="rro-stretch-arrow">↗</span>
-        <span class="rro-stretch-text">Push to a strong <b>65%</b> recovery and that grows to <b id="rroStretchVal">+$0</b> a year.</span>
+        <span class="rro-stretch-text">Look at the value if you increased recovery to 65%: <b id="rroStretchVal">+$0</b></span>
       </div>
     </div>
    </div><!-- /snapshot -->
@@ -419,18 +462,39 @@
       <h3 id="takeTitle">Where this leaves you</h3>
       <p id="takeBody"></p>
       <p id="takeBacklog" style="display:none"></p>
-      <p class="cta-lead">Want to discuss your numbers in detail?</p>
-      <a class="cta" id="ctaDemo" href="https://upclear.com/contact/" target="_blank" rel="noopener">Book a free call with us →</a>
     </div>
 
-    <div class="block dl-block">
-      <h3>Download a snapshot of your report</h3>
-      <p class="note">Enter your business email and we'll generate a shareable image of your results.</p>
-      <div class="dl-row">
-        <input type="email" id="dlEmail" placeholder="you@company.com" autocomplete="email">
-        <button class="btn btn-primary" id="dlBtn">Download PNG</button>
+    <div class="block next-block">
+      <h3>What you can do next</h3>
+      <div class="next-list">
+        <div class="next-item next-download">
+          <div class="next-text">
+            <span class="next-title">Download your results</span>
+            <span class="next-sub">Get a shareable snapshot of your report.</span>
+            <div class="dl-row">
+              <input type="email" id="dlEmail" placeholder="you@company.com" autocomplete="email">
+              <button class="btn btn-primary" id="dlBtn">Download PNG</button>
+            </div>
+            <div class="err" id="dlErr"></div>
+          </div>
+        </div>
+        <a class="next-item" href="https://survey.zohopublic.com/zs/tXwWFf" target="_blank" rel="noopener">
+          <span class="next-title">Take the complete Deduction Benchmark Survey →</span>
+          <span class="next-sub">Contribute your data and see the full picture.</span>
+        </a>
+        <a class="next-item" href="https://upclear.com/cpg-deduction-benchmark-report-2026/" target="_blank" rel="noopener">
+          <span class="next-title">Request UpClear's complete 2026 Deduction Report →</span>
+          <span class="next-sub">The full benchmarking study and findings.</span>
+        </a>
+        <a class="next-item" href="https://upclear.com/solutions/deduction-management/" target="_blank" rel="noopener">
+          <span class="next-title">Learn about deduction management in BlueRGM →</span>
+          <span class="next-sub">See how UpClear helps recover more.</span>
+        </a>
+        <a class="next-item" id="nextMeeting" href="https://upclear.com/contact/" target="_blank" rel="noopener">
+          <span class="next-title">Set up a meeting →</span>
+          <span class="next-sub" id="nextMeetingSub">Talk through your numbers with our team.</span>
+        </a>
       </div>
-      <div class="err" id="dlErr"></div>
     </div>
 
     <div class="restart"><button id="restartBtn">↺ Start over</button></div>
@@ -452,7 +516,7 @@
   var COLLECT_ENDPOINT = 'https://formspree.io/f/mykapvjo';
 
   var state = {
-    revenue:null, dedRate:10, invalidRate:null, recoveryRate:null, agingRate:null
+    revenue:null, dedRate:0, invalidRate:null, recoveryRate:null, agingRate:null
   };
   var step = 0;
 
@@ -556,7 +620,7 @@
   function stepValid(){
     switch(step){
       case 0: return !!state.revenue;
-      case 1: return true; // slider always has a value
+      case 1: return state.dedRate > 0; // must set a deduction rate
       case 2: return state.invalidRate!=null;
       case 3: return state.recoveryRate!=null;
       case 4: return state.agingRate!=null;
@@ -723,6 +787,19 @@
     $('vtInvBm').textContent = '$' + fmtFull(c.invalidBm);
     $('vtRecYou').textContent = '$' + fmtFull(c.recovered);
     $('vtRecBm').textContent = '$' + fmtFull(c.recoveredBm);
+    // traffic lights: green=good, yellow=caution, red=high/bad
+    var indWord = { good:'Good', warn:'Caution', bad:'High' };
+    function setInd(dotId, lblId, cls){
+      $(dotId).className = 'vt-ind ' + cls;
+      $(lblId).className = 'vt-ind-label ' + cls;
+      $(lblId).textContent = indWord[cls];
+    }
+    // Deductions: at/below benchmark good, above is a warning
+    setInd('vtDedInd', 'vtDedLbl', state.dedRate <= 10 ? 'good' : 'warn');
+    // Invalid: below benchmark is caution (may be under-identifying), modestly above ok, well above bad
+    setInd('vtInvInd', 'vtInvLbl', state.invalidRate < 10 ? 'warn' : (state.invalidRate <= 15 ? 'good' : 'bad'));
+    // Recovery: at/above benchmark good, somewhat below caution, well below bad
+    setInd('vtRecInd', 'vtRecLbl', state.recoveryRate >= 40 ? 'good' : (state.recoveryRate >= 25 ? 'warn' : 'bad'));
 
     // ===== Invalid deduction opportunity hero =====
     // If invalid rate is below the 10% benchmark, show the gap they may be missing,
@@ -731,11 +808,13 @@
     $('invPool').textContent = '$' + fmtFull(c.invalid);
     var invBelow = state.invalidRate < 10;
     if (invBelow) {
-      invHero.className = 'block rro-hero';
+      invHero.className = 'block rro-hero rro-caution';
       var invGap = Math.max(0, c.invalidBm - c.invalid);   // missed invalid $
       var invRecoverable = invGap * 0.40;                  // recoverable at 40% benchmark
-      $('invBigWrap').className = 'rro-big';
+      $('invBigWrap').className = 'rro-big rro-warn';
       $('invBig').textContent = '+$' + fmtFull(invGap);
+      $('invBigLabel').textContent = 'Potential invalid deductions you may be missing';
+      $('invBigLabel').style.display = '';
       $('invContext').innerHTML = 'At <b>' + state.invalidRate + '%</b>, you flag fewer invalid deductions than the '
         + '<b>10% industry benchmark</b>. That gap is invalid charges you may be missing, leaving money on the table.';
       $('invStretchVal').textContent = '+$' + fmtFull(invRecoverable);
@@ -743,6 +822,7 @@
       invHero.className = 'block rro-hero beating';
       $('invBigWrap').className = 'rro-big rro-na';
       $('invBig').textContent = 'N/A';
+      $('invBigLabel').style.display = 'none';
       $('invContext').innerHTML = 'At <b>' + state.invalidRate + '%</b>, you\u2019re already at or above the '
         + '<b>10% industry benchmark</b> for invalid deductions identified. The opportunity now is recovering more of them.';
     }
@@ -750,20 +830,50 @@
     // ===== Revenue recovery opportunity hero (dispute recovery) =====
     $('rroPool').textContent = '$' + fmtFull(c.invalid);
     var recHero = $('recHero');
-    if (c.beatingBenchmark) {
+    var recBig = recHero.querySelector('.rro-big');
+    var recDiff = Math.abs(state.recoveryRate - 40);
+    var recDir = state.recoveryRate < 40 ? 'less' : 'more';
+    $('rroContext').innerHTML = 'At <b>' + state.recoveryRate + '%</b>, you recover <b>' + recDiff
+      + ' points ' + recDir + '</b> than the benchmark of <b>40%</b>.';
+    var recStretch = $('rroStretch');
+    if (state.recoveryRate >= 65) {
+      // At/above the 65% stretch target — no further modeled upside.
       recHero.className = 'block rro-hero beating';
-      $('rroBig').textContent = fmtFull(c.upside);
-      $('rroContext').innerHTML = 'You\u2019re already recovering above the <b>40% benchmark</b> \u2014 great work. '
-        + 'There\u2019s still about <b>$' + fmtFull(c.upside) + '</b> a year available by pushing recovery toward a best-in-class 65%.';
-    } else {
+      recBig.className = 'rro-big rro-na';
+      recBig.innerHTML = 'Top tier';
+      $('rroBigLabel').style.display = 'none';
+      $('rroSubnote').textContent = 'You\u2019re already recovering at or above a best-in-class 65%. There\u2019s no modeled recovery gap to close \u2014 the focus now is holding that rate.';
+      $('rroSubnote').style.display = '';
+      recStretch.style.display = 'none';
+    } else if (c.beatingBenchmark) {
+      // At/above 40% but below 65% — remaining opportunity is the push to 65%.
       recHero.className = 'block rro-hero';
-      $('rroBig').textContent = fmtFull(c.oppBenchmark);
-      $('rroContext').innerHTML = 'That\u2019s the additional revenue you\u2019d recover each year by lifting dispute recovery from '
-        + '<b>' + state.recoveryRate + '%</b> to the <b>40% industry benchmark</b>.';
+      recBig.className = 'rro-big';
+      recBig.innerHTML = '+$<span id="rroBig">' + fmtFull(c.upside) + '</span>';
+      $('rroBigLabel').textContent = 'Potential additional recovery at a strong 65%';
+      $('rroBigLabel').style.display = '';
+      $('rroSubnote').style.display = 'none';
+      recStretch.style.display = 'none';
+    } else {
+      // Below benchmark — opportunity is reaching 40%, 65% stretch in the pill.
+      recHero.className = 'block rro-hero';
+      recBig.className = 'rro-big';
+      recBig.innerHTML = '+$<span id="rroBig">' + fmtFull(c.oppBenchmark) + '</span>';
+      $('rroBigLabel').textContent = 'Potential additional recovery at the 40% benchmark';
+      $('rroBigLabel').style.display = '';
+      $('rroSubnote').style.display = 'none';
+      recStretch.style.display = '';
       $('rroStretchVal').textContent = '+$' + fmtFull(c.upside);
     }
 
     buildBenchmarks();
+
+    // meeting CTA subtext: if below benchmark, quantify the 40% opportunity
+    if (!c.beatingBenchmark && c.oppBenchmark > 0) {
+      $('nextMeetingSub').textContent = 'If you increased recovery to the 40% benchmark, that\u2019s +$' + fmtFull(c.oppBenchmark) + ' a year. Let\u2019s talk through how.';
+    } else {
+      $('nextMeetingSub').textContent = 'Talk through your numbers with our team.';
+    }
 
     // takeaway copy keyed to the worst dimension
     var t = takeaway(c);
@@ -780,26 +890,32 @@
 
   function takeaway(c){
     // Recovery message: below benchmark = "bleeding", at/above = "congratulations".
+    // Uses the SAME opportunity figure as the recovery hero so numbers stay consistent.
     var recoveryBelow = state.recoveryRate < 40;
     var t;
     if (recoveryBelow) {
       t = {
         title:'Recovery is where you\u2019re bleeding',
-        body:'You\u2019re recovering only ' + state.recoveryRate + '% of disputes, leaving roughly $'
-          + fmtMoney(c.gap) + ' in invalid charges on the table each year. That puts you with the 63% of brands recovering less than half of their invalid deductions.'
+        body:'At a ' + state.recoveryRate + '% win rate, you\u2019re recovering less than the 40% benchmark, which puts you among the 63% of brands recovering less than half of their invalid deductions. Reaching the benchmark would put roughly $'
+          + fmtFull(c.oppBenchmark) + ' a year back in your pocket.'
+      };
+    } else if (state.recoveryRate >= 65) {
+      t = {
+        title:'You\u2019re ahead of the field',
+        body:'At a ' + state.recoveryRate + '% win rate, you\u2019re recovering at or above a best-in-class 65%. The opportunity now is holding that rate as deduction volume grows.'
       };
     } else {
       t = {
-        title:'Congratulations!',
-        body:'You\u2019re beating the benchmark! But there\u2019s still money on the table. If you were able to boost your recovery rate to 65%, you\u2019d be reclaiming an additional $'
-          + fmtFull(c.upside) + '.'
+        title:'Congratulations \u2014 you\u2019re beating the benchmark',
+        body:'At a ' + state.recoveryRate + '% win rate, you\u2019re already past the 40% benchmark. There\u2019s still room to push higher: reaching a best-in-class 65% would add roughly $'
+          + fmtFull(c.upside) + ' a year.'
       };
     }
     // Optional backlog message: only if backlog is above the 26% benchmark.
     if (state.agingRate > 26) {
       var pts = state.agingRate - 26;
-      t.backlog = 'You reported deductions older than 60 days to be ' + state.agingRate + '%. This is ' + pts
-        + ' points higher than the benchmark. Because many retailers and distributors restrict how long deductions can be disputed, age may be limiting the revenue you\u2019re able to recover.';
+      t.backlog = 'You reported deductions older than 60 days to be ' + state.agingRate + '%, ' + pts
+        + ' points above the benchmark. Because many retailers and distributors limit how long deductions can be disputed, that age may be capping the revenue you\u2019re able to recover.';
     } else {
       t.backlog = '';
     }
@@ -864,12 +980,12 @@
 
   /* ---------- restart ---------- */
   $('restartBtn').addEventListener('click', function(){
-    state = {revenue:null, dedRate:10, invalidRate:null, recoveryRate:null, agingRate:null};
+    state = {revenue:null, dedRate:0, invalidRate:null, recoveryRate:null, agingRate:null};
     step = 0;
     document.querySelectorAll('.choice').forEach(function(b){b.setAttribute('aria-pressed','false');});
     $('revenue').value='';
     $('dlEmail').value=''; $('dlErr').textContent='';
-    $('dedRate').value=10; $('dedRateVal').textContent='10%';
+    $('dedRate').value=0; $('dedRateVal').textContent='0%';
     $('results').classList.remove('is-active');
     document.getElementById('card').style.display='';
     $('nav').style.display='';

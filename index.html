@@ -206,6 +206,7 @@
   .rro-hero.beating .rro-big{color:#358035}
   .rro-hero.beating .rro-stretch{display:none}
   .rro-big.rro-na{color:var(--muted-2); font-size:clamp(28px,6vw,38px)}
+  .rro-big.rro-greentext{color:#358035; font-size:clamp(28px,6vw,40px)}
   .rro-big.rro-warn{color:#d39728}
 
   .block{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:22px 22px; margin-bottom:18px}
@@ -736,7 +737,7 @@
       {
         name:'Invalid deduction rate',
         you:state.invalidRate, ref:10, max:55,
-        verdict: state.invalidRate<=5 ? ['Strong','v-good'] : state.invalidRate<=10 ? ['Typical','v-mid'] : ['High','v-bad']
+        verdict: state.invalidRate>=10 ? ['Great','v-good'] : state.invalidRate>=7 ? ['Typical','v-mid'] : ['Low','v-mid']
       },
       {
         name:'Dispute recovery rate',
@@ -793,7 +794,7 @@
     // Deductions: at/below benchmark good, above is a warning
     setInd('vtDedInd', 'vtDedLbl', state.dedRate <= 10 ? 'good' : 'warn');
     // Invalid: below benchmark is caution (may be under-identifying), modestly above ok, well above bad
-    setInd('vtInvInd', 'vtInvLbl', state.invalidRate < 10 ? 'warn' : (state.invalidRate <= 15 ? 'good' : 'bad'));
+    setInd('vtInvInd', 'vtInvLbl', state.invalidRate >= 10 ? 'good' : (state.invalidRate >= 7 ? 'warn' : 'warn'));
     // Recovery: at/above benchmark good, somewhat below caution, well below bad
     setInd('vtRecInd', 'vtRecLbl', state.recoveryRate >= 40 ? 'good' : (state.recoveryRate >= 25 ? 'warn' : 'bad'));
 
@@ -808,6 +809,7 @@
       var invGap = Math.max(0, c.invalidBm - c.invalid);   // missed invalid $
       var invRecoverable = invGap * 0.40;                  // recoverable at 40% benchmark
       $('invBigWrap').className = 'rro-big rro-warn';
+      $('invBigWrap').style.display = '';
       $('invBig').textContent = '+$' + fmtFull(invGap);
       $('invContext').innerHTML = 'At <b>' + state.invalidRate + '%</b>, you flag fewer invalid deductions than the <b>10% industry benchmark</b>.';
       $('invPoolLine').innerHTML = 'You report <b>$' + fmtFull(c.invalid) + '</b> in invalid deductions today. You may be missing:';
@@ -817,11 +819,13 @@
       $('invStretchVal').textContent = '+$' + fmtFull(invRecoverable);
     } else {
       invHero.className = 'block rro-hero beating';
-      $('invBigWrap').className = 'rro-big rro-na';
-      $('invBig').textContent = 'N/A';
-      $('invContext').innerHTML = 'At <b>' + state.invalidRate + '%</b>, you\u2019re already at or above the '
-        + '<b>10% industry benchmark</b> for invalid deductions identified. The opportunity now is recovering more of them.';
-      $('invPoolLine').innerHTML = 'You report <b>$' + fmtFull(c.invalid) + '</b> in invalid deductions';
+      $('invBigWrap').className = 'rro-big';
+      $('invBigWrap').style.display = 'none';
+      $('invBig').textContent = '';
+      $('invContext').innerHTML = 'At <b>' + state.invalidRate + '%</b>, you\u2019re identifying invalid deductions at or above the '
+        + '<b>10% industry benchmark</b>.';
+      $('invPoolLine').innerHTML = 'You\u2019ve flagged <b>$' + fmtFull(c.invalid) + '</b> in invalid deductions, good visibility into charges you don\u2019t owe. The opportunity now is recovering more of them.';
+      $('invSubnote').textContent = '';
       $('invSubnote').style.display = 'none';
       invStretch.style.display = 'none';
     }

@@ -532,7 +532,10 @@
   function notifyHeight(){
     try {
       var h = Math.ceil(document.documentElement.getBoundingClientRect().height);
-      if (h && h !== lastH) {
+      // Ignore transient tiny/zero measurements that happen mid-DOM-swap;
+      // a collapsed iframe is the classic cause of a "blank" results page.
+      if (h < 50) return;
+      if (h !== lastH) {
         lastH = h;
         if (window.parent && window.parent !== window) {
           window.parent.postMessage({ type: 'dedcalc:height', height: h }, '*');
@@ -540,8 +543,14 @@
       }
     } catch(e){}
   }
+  // Re-measure a few times after layout settles (fonts, images, reflow),
+  // so the parent iframe always lands on the correct final height.
+  function notifyHeightSettled(){
+    notifyHeight();
+    [60, 200, 500, 1000].forEach(function(ms){ setTimeout(notifyHeight, ms); });
+  }
   window.addEventListener('resize', notifyHeight);
-  window.addEventListener('load', notifyHeight);
+  window.addEventListener('load', notifyHeightSettled);
   if (window.ResizeObserver) {
     try { new ResizeObserver(notifyHeight).observe(document.body); } catch(e){}
   }
@@ -831,7 +840,6 @@
     }
 
     // ===== Revenue recovery opportunity hero (dispute recovery) =====
-    $('rroPool').textContent = '$' + fmtFull(c.invalid);
     var recHero = $('recHero');
     var recBig = recHero.querySelector('.rro-big');
     var recDiff = Math.abs(state.recoveryRate - 40);
@@ -886,7 +894,7 @@
 
     var res = $('results');
     res.classList.add('is-active');
-    notifyHeight();
+    notifyHeightSettled();
   }
 
   function takeaway(c){

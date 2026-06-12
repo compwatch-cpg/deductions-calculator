@@ -846,20 +846,22 @@
     var recDir = state.recoveryRate < 40 ? 'less' : 'more';
     $('rroContext').innerHTML = 'At <b>' + state.recoveryRate + '%</b>, you recover <b>' + recDiff
       + ' points ' + recDir + '</b> than the benchmark of <b>40%</b>.';
+    $('rroContext').style.display = (state.recoveryRate >= 65) ? 'none' : '';
     var recStretch = $('rroStretch');
     $('rroSubnote').style.display = '';
     if (state.recoveryRate >= 65) {
       // At/above the 65% stretch target — no further modeled upside.
       recHero.className = 'block rro-hero beating';
-      recBig.className = 'rro-big rro-na';
-      recBig.innerHTML = 'Top tier';
-      $('rroPoolLine').innerHTML = 'From <b>$' + fmtFull(c.invalid) + '</b> in invalid deductions';
-      $('rroSubnote').textContent = 'You\u2019re already recovering at or above a best-in-class 65%. There\u2019s no modeled recovery gap to close \u2014 the focus now is holding that rate.';
+      recBig.className = 'rro-big';
+      recBig.style.display = 'none';
+      $('rroPoolLine').innerHTML = 'You recover <b>' + state.recoveryRate + '%</b> of disputes, well above the 40% benchmark.';
+      $('rroSubnote').textContent = 'You\u2019re already best-in-class. The focus now is holding that rate.';
       recStretch.style.display = 'none';
     } else if (c.beatingBenchmark) {
       // At/above 40% but below 65% — remaining opportunity is the push to 65%.
       recHero.className = 'block rro-hero';
       recBig.className = 'rro-big';
+      recBig.style.display = '';
       recBig.innerHTML = '+$<span id="rroBig">' + fmtFull(c.upside) + '</span>';
       $('rroPoolLine').innerHTML = 'From <b>$' + fmtFull(c.invalid) + '</b> in invalid deductions, you could recover an extra:';
       $('rroSubnote').textContent = 'by lifting your win rate to a best-in-class 65%.';
@@ -868,6 +870,7 @@
       // Below benchmark — opportunity is reaching 40%, 65% stretch in the pill.
       recHero.className = 'block rro-hero';
       recBig.className = 'rro-big';
+      recBig.style.display = '';
       recBig.innerHTML = '+$<span id="rroBig">' + fmtFull(c.oppBenchmark) + '</span>';
       $('rroPoolLine').innerHTML = 'From <b>$' + fmtFull(c.invalid) + '</b> in invalid deductions, you could recover an extra:';
       $('rroSubnote').textContent = 'by lifting your win rate to the 40% benchmark.';
